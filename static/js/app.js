@@ -1,7 +1,7 @@
 
 // use d3 to load sample data
 var samples = {};
-d3.json("/static/data/samples.json").then(function(data) {
+d3.json("samples.json").then(function(data) {
 //    console.log(data);
     samples = data;
     data.names.forEach(function(name){
