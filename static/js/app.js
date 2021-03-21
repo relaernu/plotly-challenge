@@ -1,21 +1,13 @@
 
-
 // use d3 to load sample data
-// var samples = {};
-// d3.json("/static/data/samples.json").then(function(data) {
-// //    console.log(data);
-//     samples = data;
-//     data.names.forEach(function(name){
-//         d3.select("#selDataset").append("option").attr("value", name).text(name);
-//     });
-// });
-
-// for test purpose only
-var samples = data;
-samples.names.forEach(name => d3.select("#selDataset")
-                                .append("option")
-                                .attr("value", name)
-                                .text(name));
+var samples = {};
+d3.json("/static/data/samples.json").then(function(data) {
+//    console.log(data);
+    samples = data;
+    data.names.forEach(function(name){
+        d3.select("#selDataset").append("option").attr("value", name).text(name);
+    });
+});
 
 // d3.select("#selDataset").on("change", loadData)
 function optionChanged(event) {
@@ -23,11 +15,15 @@ function optionChanged(event) {
     loadMeta(event);
 }
 
+// to create every thing
 function createAll(id) {
+
+    // get the data for id selected
     var sample = samples.samples.filter(x => x.id === id);
+
     // console.log(sample[0].otu_ids.length);
 
-    // combine arrays to object array
+    // combine sample arrays to one object array
     var otus = [];
     for(var i=0; i<sample[0].otu_ids.length; i++) {
         otus.push({
@@ -37,20 +33,20 @@ function createAll(id) {
         });
     }
 
-    // for bar chart
+    // to create the bar chart
     // sort the array and get top 10
     var bar_data = otus.map(x=>x);
     bar_data.sort((a,b)=>b.otu_value - a.otu_value);
     bar_data = bar_data.slice(0,10);
     bar_data = bar_data.reverse();
-
     createBar(bar_data);
 
-    // for bubble chart
+    // to create bubble chart
     createBubble(otus);
 
 }
 
+// load meta data when id selected and display
 function loadMeta(id) {
     var metadata = samples.metadata.filter(d=>d.id === parseInt(id))
     if (metadata.length > 0) {
@@ -65,13 +61,14 @@ function loadMeta(id) {
         // create gauge chart
         createGauge(freq);
 
-        // use pie char as gauge
+        // use pie chart as gauge
         createPie(freq);
     }
 
 
 }
 
+// create bar chart function
 function createBar(data) {
     var trace = {
         x: data.map(x=>x.otu_value),
@@ -84,6 +81,8 @@ function createBar(data) {
     Plotly.newPlot("bar", [trace], {title: "<b>Top 10 otus</b>"});
 }
 
+
+// create bubble chart function
 function createBubble(data) {
     var trace = {
         x: data.map(x=>x.otu_id),
@@ -98,6 +97,7 @@ function createBubble(data) {
     Plotly.newPlot("bubble", [trace], {title: "<b>OTU Bubble Chart</b>"});
 }
 
+// create gauge chart function
 function createGauge(freq) {
     var trace = {
         domain: {x:[0, 1], y:[0, 1]},
@@ -127,6 +127,7 @@ function createGauge(freq) {
     Plotly.newPlot("gauge", [trace], {title: "<b>Belly Button Washing Frequency</b><br>Scrubs per Week"});
 }
 
+// use a pie chart as gauge
 function createPie(freq) {
     var tracePie = {
         type: "pie",
@@ -154,7 +155,7 @@ function createPie(freq) {
         hoverinfo: "label"
     };
 
-    // calc the pointer
+    // calc the pointer point
     var radius = 0.5;
     var x0 = 0;
     var y0 = 0;
