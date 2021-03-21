@@ -75,7 +75,9 @@ function createBar(data) {
         y: data.map(x=>`OTU ${x.otu_id}`),
         type: "bar",
         orientation: "h",
-        text: data.map(x=>x.label)
+        text: data.map(x=>x.label),
+        labels: data.map(x=>x.label),
+        hoverinfo: "labels"
     }
 
     Plotly.newPlot("bar", [trace], {title: "<b>Top 10 otus</b>"});
@@ -121,14 +123,13 @@ function createGauge(freq) {
             labels: ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6", "6-7", "7-8", "8-9"]
         }
     }
-    var layout = {
-
-    }
     Plotly.newPlot("gauge", [trace], {title: "<b>Belly Button Washing Frequency</b><br>Scrubs per Week"});
 }
 
 // use a pie chart as gauge
 function createPie(freq) {
+
+    // draw a holed pie chart
     var tracePie = {
         type: "pie",
         showlegend: false,
@@ -149,9 +150,10 @@ function createPie(freq) {
             "purple",
             "pink",
             "brown",
-            "white"],
-            labels: ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6", "6-7", "7-8", "8-9"]
+            // set the lower half part same color as blackground color to make it invisible
+            "white"]
         },
+        labels: ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6", "6-7", "7-8", "8-9", ""],
         hoverinfo: "label"
     };
 
@@ -164,6 +166,7 @@ function createPie(freq) {
     var x1 = radius * Math.cos(radian);
     var y1 = radius * Math.sin(radian);
 
+    // add the point line on the chart
     var traceLine = {
          type: "scatter",
          mode: "line",
